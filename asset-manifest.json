@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/takehome/static/css/main.190a865c.css",
+    "main.js": "/takehome/static/js/main.6b070286.js",
+    "service-worker.js": "/takehome/service-worker.js",
+    "index.html": "/takehome/index.html",
+    "main.190a865c.css.map": "/takehome/static/css/main.190a865c.css.map",
+    "main.6b070286.js.map": "/takehome/static/js/main.6b070286.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.190a865c.css",
+    "static/js/main.6b070286.js"
+  ]
+}
