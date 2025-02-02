@@ -66,6 +66,7 @@ function ContactList() {
 
   useEffect(() => {
     async function fetchData() {
+      console.log('HERE');
       await model.init();
       setContacts(await model.getContacts());
     }

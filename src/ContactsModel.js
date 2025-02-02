@@ -12,10 +12,24 @@ export default class ContactsModel {
       this.mockService = new MockService();
       this.status = "waiting to initialize";
       this.activeRecord = null;
+      this.online = false;
       ContactsModel.instance = this;
     }
 
     async init() {
+      this.online = window.navigator.onLine;
+      console.log('Model init: ' + (window.navigator.onLine ? 'on' : 'off') + 'line');
+
+      window.addEventListener('online', () => {
+        console.log('Now online');
+        this.online = true;
+        this.retrySync();
+      });
+      window.addEventListener('offline', () => {
+        console.log('Now offline');
+        this.online = false;
+        this.submissionQueue = [];
+      });
       this.retrySync();
     }
 
