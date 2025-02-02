@@ -1,7 +1,14 @@
-class MockService {
+export default class MockService {
     constructor() {
+      this.failureResponse = 'failure';
+      this.successResponse = 'success';
     }
-  
-    submit() {
+
+    async submit(record) {
+      return new Promise(resolve => setTimeout(resolve, 1500)).then((result) =>
+        {
+          return (Math.random() < .8) ? 'success' : 'failure';
+        }
+      );
     }
   }
