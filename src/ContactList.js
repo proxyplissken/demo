@@ -44,6 +44,13 @@ function ContactList() {
     await model.clear();
   };
 
+  const retrySync = async (e) => {
+    console.log(e);
+    e.preventDefault();
+
+    await model.retrySync();
+  };
+
   useEffect(() => {
     async function fetchData() {
       await model.init();
@@ -138,6 +145,7 @@ function ContactList() {
       </tbody>
     </table>
     </div>
+    <button type="submit" style = {{width: "508px"}} onClick = {retrySync}>retry sync</button>
     <button type="submit" style = {{width: "508px"}} onClick = {clearContacts}>clear contacts</button>
     </div>
   );
