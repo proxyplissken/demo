@@ -44,6 +44,19 @@ function ContactList() {
     await model.clear();
   };
 
+  const submitRandom = async (e) => {
+    console.log(e);
+    e.preventDefault();
+
+    let fakeNames = ['alice', 'bob', 'chad', 'dorothy', 'elvis', 'jerry', 'nathan', 'walter', 'shelly', 'mary'];
+    for(let i=0; i<5; i++){
+      let index = Math.floor(Math.random() * fakeNames.length);
+      let name = fakeNames[index];
+      let email = name + '@' + name + '.com';
+      await model.submit(name, email);
+    }
+  };
+
   const retrySync = async (e) => {
     console.log(e);
     e.preventDefault();
@@ -81,7 +94,20 @@ function ContactList() {
   }, []);
 
   const getStyle = (contact) => {
-    return (contact.id === activeRecordId) ? {backgroundColor:'orange'} : {backgroundColor:'blue'};
+    if (contact.id === activeRecordId) {
+      return {backgroundColor:'orange'};
+    }
+
+    switch(contact.status){
+      case 'failed':
+        return {backgroundColor:'red'};
+      case 'queued':
+        return {backgroundColor:'green'};
+      case 'synced':
+      default:
+        return {backgroundColor:'blue'};
+
+    }
   }
 
   return (
@@ -146,6 +172,7 @@ function ContactList() {
     </table>
     </div>
     <button type="submit" style = {{width: "508px"}} onClick = {retrySync}>retry sync</button>
+    <button type="submit" style = {{width: "508px"}} onClick = {submitRandom}>submit five random</button>
     <button type="submit" style = {{width: "508px"}} onClick = {clearContacts}>clear contacts</button>
     </div>
   );

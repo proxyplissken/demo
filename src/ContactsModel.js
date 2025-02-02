@@ -45,6 +45,7 @@ export default class ContactsModel {
     }
 
     async sync(record) {
+      this.updateStatus(`submitting ${record.name}, ${record.email}`);
       this.updateActiveRecord(record);
       const result = await this.mockService.submit(record);
       let newStatus = 'queued';
@@ -80,13 +81,15 @@ export default class ContactsModel {
           this.submissionQueue.push({id, name, email, status});
           this.tryQueue();
         } catch (error) {
-          console.log("Failed to save ${name} ${email} in db for queueing")
+          this.updateStatus(`Failed to save ${name} ${email} in db for queueing`);
+          console.log(`Failed to save ${name} ${email} in db for queueing`);
       }
       
       await this.updateListenersWithContacts();
     }
 
     async clear() {
+      this.submissionQueue = [];
       await db.contacts.clear();
       await this.updateListenersWithContacts();
     }

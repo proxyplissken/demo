@@ -7,7 +7,7 @@ export default class MockService {
     async submit(record) {
       return new Promise(resolve => setTimeout(resolve, 1500)).then((result) =>
         {
-          return (Math.random() < .25) ? 'success' : 'failure';
+          return (Math.random() < .8) ? 'success' : 'failure';
         }
       );
     }
