@@ -12,7 +12,7 @@ export default class ContactsModel {
       this.updateListeners = [];
       this.mockService = new MockService();
       this.status = "waiting to initialize";
-      this.activeRecord = '';
+      this.activeRecord = null;
       ContactsModel.instance = this;
     }
 
@@ -25,6 +25,18 @@ export default class ContactsModel {
       
       console.log('queued')
       console.log(this.submissionQueue);
+      this.tryQueue();
+    }
+
+    async tryQueue() {
+      if(!this.activeRecord) {
+        if(this.submissionQueue.length > 0){
+          const record = this.submissionQueue.shift();
+          this.sync(record);
+        } else {
+          this.updateStatus('idle');
+        }
+      }
     }
 
     async getContacts() {
@@ -50,6 +62,11 @@ export default class ContactsModel {
       db.contacts.update(record.id, {status:newStatus});
       this.updateStatus(result === 'success' ? 'synced successfully' : 'failed to sync');
       this.updateListenersWithContacts();
+      setTimeout(()=> {
+        this.activeRecord = null;
+        this.updateListenersOfActiveRecord(null);
+        this.tryQueue();
+      }, 1000);
     }
 
     async submit(name, email) {
@@ -61,7 +78,8 @@ export default class ContactsModel {
               email,
               status,
           });
-          this.sync({id, name, email, status});
+          this.submissionQueue.unshift({id, name, email, status});
+          this.tryQueue();
         } catch (error) {
           console.log("Failed to save ${name} ${email} in db for queueing")
       }
@@ -86,9 +104,9 @@ export default class ContactsModel {
     }
 
     async updateListenersOfActiveRecord(id) {
-      // for(let i=0; i<this.updateListeners.length; i++){
-      //   this.updateListeners[i]['activeRecord'](id);
-      // }
+      for(let i=0; i<this.updateListeners.length; i++){
+        this.updateListeners[i]['activeRecord'](id);
+      }
     }
 
     updateStatus(status){
