@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import db from './db';
 import ContactsModel from './ContactsModel';
 
 function ContactList() {
@@ -92,7 +93,7 @@ function ContactList() {
       model.removeListener(modelListener);
     }
 
-  });
+  }, [model]);
 
   const getContactStyle = (contact) => {
     if (contact.id === activeRecordId) {
