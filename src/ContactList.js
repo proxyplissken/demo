@@ -69,6 +69,7 @@ function ContactList() {
       console.log('HERE');
       await model.init();
       setContacts(await model.getContacts());
+      setFeedback(model.isOnline ? 'online: ready to submit': 'offline: submissions will be queued');
     }
     fetchData();
 
@@ -77,7 +78,7 @@ function ContactList() {
         setContacts(contacts);
       },
       feedback: (feedback) => {
-        setFeedback(feedback);
+        setFeedback(feedback ? 'online: ready to submit' : 'offline: submissions will be queued');
       },
       status: (status) => {
         setStatus(status);
