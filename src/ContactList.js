@@ -172,9 +172,15 @@ function ContactList() {
       </tbody>
     </table>
     </div>
-    <button type="submit" style = {{width: "508px"}} onClick = {retrySync}>retry sync</button>
-    <button type="submit" style = {{width: "508px"}} onClick = {submitRandom}>submit five random</button>
-    <button type="submit" style = {{width: "508px"}} onClick = {clearContacts}>clear contacts</button>
+    <div>
+      <button type="submit" style = {{width: "508px"}} onClick = {retrySync}>retry sync</button>
+    </div>
+    <div>
+      <button type="submit" style = {{width: "508px"}} onClick = {submitRandom}>submit five random</button>
+    </div>
+    <div>  
+      <button type="submit" style = {{width: "508px"}} onClick = {clearContacts}>clear contacts</button>
+    </div>  
     </div>
   );
 }
