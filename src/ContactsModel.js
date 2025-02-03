@@ -24,6 +24,7 @@ export default class ContactsModel {
       this.initted = true;
       this.isOnline = window.navigator.onLine;
       console.log('Model init: ' + (window.navigator.onLine ? 'on' : 'off') + 'line');
+      console.log('testing');
 
       window.addEventListener('online', () => {
         console.log('Now online');
