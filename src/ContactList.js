@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import db from './db';
 import ContactsModel from './ContactsModel';
 
 function ContactList() {
@@ -9,7 +8,7 @@ function ContactList() {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [activeRecordId, setActiveRecordId] = useState('');
-  const [feedback, setFeedback] = useState('ready to submit contacts');
+  const [online, setOnline] = useState('ready to submit contacts');
   const [status, setStatus] = useState('status placeholder');
   const nameRef = useRef(null);
   const emailRef = useRef(null);
@@ -69,7 +68,7 @@ function ContactList() {
       console.log('HERE');
       await model.init();
       setContacts(await model.getContacts());
-      setFeedback(model.isOnline ? 'online: ready to submit': 'offline: submissions will be queued');
+      setOnline(model.isOnline);
     }
     fetchData();
 
@@ -77,8 +76,8 @@ function ContactList() {
       contacts: (contacts) => {
         setContacts(contacts);
       },
-      feedback: (feedback) => {
-        setFeedback(feedback ? 'online: ready to submit' : 'offline: submissions will be queued');
+      online: (online) => {
+        setOnline(online);
       },
       status: (status) => {
         setStatus(status);
@@ -93,9 +92,9 @@ function ContactList() {
       model.removeListener(modelListener);
     }
 
-  }, []);
+  });
 
-  const getStyle = (contact) => {
+  const getContactStyle = (contact) => {
     if (contact.id === activeRecordId) {
       return {backgroundColor:'orange'};
     }
@@ -104,29 +103,41 @@ function ContactList() {
       case 'failed':
         return {backgroundColor:'red'};
       case 'queued':
-        return {backgroundColor:'green'};
+        return online ? {backgroundColor:'green'} : {backgroundColor: 'lightblue'};
       case 'synced':
       default:
         return {backgroundColor:'blue'};
-
     }
+  }
+
+  const getInfoStyle = () => {
+    if (error) {
+      return {backgroundColor: 'red', width: "508px", justifyContent: "center"};
+    }
+
+    if(online){
+      return {backgroundColor: 'green', width: "508px", justifyContent: "center"};
+    }
+    
+    return {backgroundColor: 'lightblue', width: "508px", justifyContent: "center"};
+  }
+
+  const getInfoText = () => {
+    if(error){
+      return error;
+    }
+
+    return online ? 'online: ready to submit' : 'offline: submissions will be queued';
   }
 
   return (
     <div style={{dispay: "flex", textAlign: "center", justifyContent: "center"}}>
-      {error ? (<div className="error" style={{display: "flex", justifyContent: "center"}}>
-        <div style={{backgroundColor: 'red', width: "508px", display: "flex", justifyContent: "center"}}>
-         {error}
-        </div>
-      </div>) : (
-        <div className="error" style={{display: "flex", justifyContent: "center"}}>
-        <div style={{backgroundColor: 'green', width: "508px", display: "flex", justifyContent: "center"}}>
-         {feedback}
+      <div style={{display: "flex", justifyContent: "center"}}>
+        <div style={getInfoStyle()}>
+         {getInfoText()}
         </div>
       </div>
-      )
-
-      }
+      
       <form onSubmit={handleSubmit}>
         <input 
           type="text" 
@@ -164,7 +175,7 @@ function ContactList() {
       </thead>
       <tbody>
         {contacts.map((contact) => (
-          <tr style= {getStyle(contact)} key={contact.id}>
+          <tr style= {getContactStyle(contact)} key={contact.id}>
             <td>{contact.name}</td>
             <td>{contact.email}</td>
             <td>{contact.status}</td>

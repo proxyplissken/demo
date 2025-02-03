@@ -67,7 +67,7 @@ export default class ContactsModel {
 
     async sync(record) {
       if(this.isOnline){
-        this.updateStatus(`submitting ${record.name}, ${record.email}`);
+        this.updateStatus(`submitting ${record.name}`);
         this.updateActiveRecord(record);
         const result = await this.mockService.submit(record);
         let newStatus = 'queued';
@@ -83,19 +83,19 @@ export default class ContactsModel {
         console.log('update db after sync');
         console.log(record);
         db.contacts.update(record.id, {status:newStatus});
-        this.updateStatus(result === 'success' ? 'synced successfully' : 'failed to sync');
+        this.updateStatus(result === 'success' ? `${record.name} synced successfully` : `${record.name} failed to sync`);
         this.updateListenersWithContacts();
         setTimeout(()=> {
           this.updateActiveRecord(null);
           this.tryQueue();
         }, 1000);
       } else {
-        this.updateStatus(`${record.name}, ${record.email} is queued for submission once online`);
+        this.updateStatus(`${record.name} is queued for submission once online`);
       }
     }
 
     async submit(name, email) {
-      this.updateStatus(`storing ${name}, ${email}`);
+      this.updateStatus(`storing ${name} for submission`);
       const status = 'queued';
       try {
           const id =  await db.contacts.add({
@@ -144,10 +144,10 @@ export default class ContactsModel {
       }
     }
 
-    updateOnline(onLine){
-      this.isOnline = onLine;
+    updateOnline(online){
+      this.isOnline = online;
       for(let i=0; i<this.updateListeners.length; i++){
-        this.updateListeners[i]['feedback'](onLine);
+        this.updateListeners[i]['online'](online);
       }
     }
 
