@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import db from './db';
-import ContactsModel from './ContactsModel';
 
-function ContactList() {
-  const model = new ContactsModel();
+function ContactList(props) {
   const [contacts, setContacts] = useState([]);
   const [retryDisabled, setRetryDisabled] = useState(true);
   const [name, setName] = useState('');
@@ -35,14 +33,14 @@ function ContactList() {
 
     nameRef.current.focus();
 
-    await model.submit(name, email);
+    await props.model.submit(name, email);
   };
 
   const clearContacts = async (e) => {
     console.log(e);
     e.preventDefault();
 
-    await model.clear();
+    await props.model.clear();
   };
 
   const submitRandom = async (e) => {
@@ -54,7 +52,7 @@ function ContactList() {
       let index = Math.floor(Math.random() * fakeNames.length);
       let name = fakeNames[index];
       let email = name + '@' + name + '.com';
-      await model.submit(name, email);
+      await props.model.submit(name, email);
     }
   };
 
@@ -62,15 +60,15 @@ function ContactList() {
     console.log(e);
     e.preventDefault();
 
-    await model.retrySync();
+    await props.model.retrySync();
   };
 
   useEffect(() => {
     async function fetchData() {
       console.log('HERE');
-      await model.init();
-      setContacts(await model.getContacts());
-      setOnline(model.isOnline);
+      await props.model.init();
+      setContacts(await props.model.getContacts());
+      setOnline(props.model.isOnline);
     }
     fetchData();
 
@@ -89,13 +87,13 @@ function ContactList() {
         setActiveRecordId(id);
       }
     }
-    model.addListener(modelListener);
+    props.model.addListener(modelListener);
 
     return () => {
-      model.removeListener(modelListener);
+      props.model.removeListener(modelListener);
     }
 
-  }, [model]);
+  }, [props.model]);
 
   const getContactStyle = (contact) => {
     if (contact.id === activeRecordId) {

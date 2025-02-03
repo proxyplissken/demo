@@ -1,5 +1,8 @@
 import './App.css';
 import ContactList from './ContactList';
+import ContactsModel from './ContactsModel';
+
+const model = new ContactsModel();
 
 function App() {
   return (
@@ -7,7 +10,7 @@ function App() {
       <header className="App-header">
         Takehome Demo
       </header>
-      <ContactList/>
+      <ContactList model = {model}/>
     </div>
   );
 }
