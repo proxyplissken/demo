@@ -67,8 +67,8 @@ export default class ContactsModel {
 
     async sync(record) {
       if(this.isOnline){
-        this.updateStatus(`submitting ${record.name}`);
         this.updateActiveRecord(record);
+        this.updateStatus(`submitting ${record.name}`);
         const result = await this.mockService.submit(record);
         let newStatus = 'queued';
         switch(result){

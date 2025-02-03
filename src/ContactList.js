@@ -5,6 +5,7 @@ import ContactsModel from './ContactsModel';
 function ContactList() {
   const model = new ContactsModel();
   const [contacts, setContacts] = useState([]);
+  const [retryDisabled, setRetryDisabled] = useState(true);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
@@ -82,6 +83,7 @@ function ContactList() {
       },
       status: (status) => {
         setStatus(status);
+        setRetryDisabled(status !== 'idle');
       },
       activeRecord: (id) => {
         setActiveRecordId(id);
@@ -127,7 +129,6 @@ function ContactList() {
     if(error){
       return error;
     }
-
     return online ? 'online: ready to submit' : 'offline: submissions will be queued';
   }
 
@@ -186,7 +187,7 @@ function ContactList() {
     </table>
     </div>
     <div>
-      <button type="submit" style = {{width: "508px"}} onClick = {retrySync}>retry sync</button>
+      <button type="submit" style = {{width: "508px"}} disabled = {retryDisabled} onClick = {retrySync}>retry sync</button>
     </div>
     <div>
       <button type="submit" style = {{width: "508px"}} onClick = {submitRandom}>submit five random</button>
